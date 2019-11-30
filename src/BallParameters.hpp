@@ -27,12 +27,12 @@ public:
     void setCircleColor(const QColor& circleColor);
 
 signals:
-    void speedChanged();
-    void directionAngleChanged();
-    void radiusChanged();
-    void positionChanged();
-    void borderColorChanged();
-    void circleColorChanged();
+    void speedChanged(double speed);
+    void directionAngleChanged(double directionAngle);
+    void radiusChanged(double radius);
+    void positionChanged(const QPointF& position);
+    void borderColorChanged(const QColor& borderColor);
+    void circleColorChanged(const QColor& circleColor);
 
 private:
     double speed;

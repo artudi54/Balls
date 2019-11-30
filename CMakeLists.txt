@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.10)
 project(Balls VERSION 1.0.0 LANGUAGES CXX)
 
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
 # Dependencies
 find_package(Qt5 HINTS $ENV{QTDIR} REQUIRED
 COMPONENTS
@@ -9,18 +11,23 @@ COMPONENTS
     Widgets
 )
 
-
 # Executable
 set(SOURCES
     src/Ball.cpp
+    src/BallColider.cpp
     src/BallParameters.cpp
     src/main.cpp
 )
 set(HEADERS
     src/Ball.hpp
+    src/BallColider.hpp
     src/BallParameters.hpp
 )
-add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
+set(UI_FILES
+    ui/BallColider.ui
+)
+qt5_wrap_ui(SOURCES ${UI_FILES})
+add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS} ${UI_SOURCES} ${RESOURCES})
 
 # Compile options
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_14)
@@ -35,7 +42,11 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     target_compile_options(${PROJECT_NAME} PRIVATE /W4 /Wall /Za /permissive- ${IGNORED_WARNINGS})
     target_compile_definitions(${PROJECT_NAME} PRIVATE -D_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS -D_SCL_SECURE_NO_WARNINGS -D_CRT_SECURE_NO_WARNINGS)
 endif()
-set_target_properties(${PROJECT_NAME} PROPERTIES AUTOMOC ON)
+set_target_properties(${PROJECT_NAME}
+    PROPERTIES
+        AUTOMOC ON
+        AUTORCC ON
+)
 
 # Include directories
 target_include_directories(${PROJECT_NAME}

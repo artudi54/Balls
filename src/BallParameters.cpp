@@ -15,7 +15,7 @@ void BallParameters::setSpeed(double speed) {
     if (this-> speed == speed)
         return;
     this->speed = speed;
-    emit speedChanged();
+    emit speedChanged(this->speed);
 }
 
 double BallParameters::getDirectionAngle() const {
@@ -26,7 +26,7 @@ void BallParameters::setDirectionAngle(double directionAngle) {
     if (this->directionAngle == directionAngle)
         return;
     this->directionAngle = directionAngle;
-    emit directionAngleChanged();
+    emit directionAngleChanged(this->directionAngle);
 }
 
 double BallParameters::getRadius() const {
@@ -37,7 +37,7 @@ void BallParameters::setRadius(double radius) {
     if (this->radius == radius)
         return;
     this->radius = radius;
-    emit radiusChanged();
+    emit radiusChanged(this->radius);
 }
 
 const QPointF& BallParameters::getPosition() const {
@@ -48,7 +48,7 @@ void BallParameters::setPosition(const QPointF& position) {
     if (this->position == position)
         return;
     this->position = position;
-    emit positionChanged();
+    emit positionChanged(this->position);
 }
 
 const QColor& BallParameters::getBorderColor() const {
@@ -59,7 +59,7 @@ void BallParameters::setBorderColor(const QColor& borderColor) {
     if (this->borderColor == borderColor)
         return;
     this->borderColor = borderColor;
-    emit borderColorChanged();
+    emit borderColorChanged(this->borderColor);
 }
 
 const QColor& BallParameters::getCircleColor() const {
@@ -70,5 +70,5 @@ void BallParameters::setCircleColor(const QColor& circleColor) {
     if (this->circleColor == circleColor)
         return;
     this->circleColor = circleColor;
-    emit circleColorChanged();
+    emit circleColorChanged(this->circleColor);
 }
