@@ -1,10 +1,5 @@
 #include "BallColider.hpp"
 #include "ui_BallColider.h"
-#include <ctime>
-#include <random>
-
-
-static std::mt19937 randomEngine(static_cast<std::mt19937::result_type>(std::time(nullptr)));
 
 BallColider::BallColider(QWidget *parent)
     : QWidget(parent)
@@ -20,12 +15,12 @@ BallColider::BallColider(QWidget *parent)
     blueBall = new Ball(blueBallParameters, ui->ballWidget);
 
     connectSignals();
-    setRedBallParameters();
-    setBlueBallParameters();
-    placeBalls();
+    setRedBallColors();
+    setBlueBallColors();
 
-    animator = new BallMoveAnimator(redBallParameters, blueBallParameters, ui->ballWidget->size(), 5, this);
-    animator->start();
+    animator = new BallAnimator(redBallParameters, blueBallParameters, ui->ballWidget->size(), this);
+    animator->randomPlaceBalls();
+    animator->start(10);
 }
 
 BallColider::~BallColider() {
@@ -52,36 +47,14 @@ void BallColider::connectSignals() {
             [&](double value) { updateSliderValueWithoutNotifying(ui->blueBallRadiusSlider, value);});
 }
 
-void BallColider::setRedBallParameters() {
-    setBaseBallParameters(redBallParameters);
+void BallColider::setRedBallColors() {
     redBallParameters->setBorderColor(Qt::GlobalColor::darkRed);
     redBallParameters->setCircleColor(Qt::GlobalColor::red);
 }
 
-void BallColider::setBlueBallParameters() {
-    setBaseBallParameters(blueBallParameters);
+void BallColider::setBlueBallColors() {
     blueBallParameters->setBorderColor(Qt::GlobalColor::darkBlue);
     blueBallParameters->setCircleColor(Qt::GlobalColor::cyan);
-}
-
-void BallColider::setBaseBallParameters(BallParameters *parameters) {
-    std::uniform_real_distribution<double> dist(-M_PI, M_PI);
-    parameters->setSpeed(100.0);
-    parameters->setDirectionAngle(dist(randomEngine));
-    parameters->setRadius(50.0);
-}
-
-void BallColider::placeBalls() {
-    double width = ui->ballWidget->width();
-    double height = ui->ballWidget->height();
-
-    std::uniform_real_distribution<double> redXDist(redBallParameters->getRadius(), width -  redBallParameters->getRadius());
-    std::uniform_real_distribution<double> redYDist(redBallParameters->getRadius(), height - redBallParameters->getRadius());
-    redBallParameters->setPosition(QPointF(redXDist(randomEngine), redYDist(randomEngine)));
-
-    std::uniform_real_distribution<double> blueXDist(blueBallParameters->getRadius(), width -  redBallParameters->getRadius());
-    std::uniform_real_distribution<double> blueYDist(blueBallParameters->getRadius(), height - redBallParameters->getRadius());
-    blueBallParameters->setPosition(QPointF(blueXDist(randomEngine), blueYDist(randomEngine)));
 }
 
 void BallColider::updateSliderValueWithoutNotifying(QSlider *slider, double value) {

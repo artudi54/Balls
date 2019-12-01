@@ -4,16 +4,22 @@
 #include <QTimer>
 #include <BallParameters.hpp>
 
-class BallMoveAnimator : public QObject {
+class BallAnimator : public QObject {
     Q_OBJECT
 public:
-    BallMoveAnimator(BallParameters* redBallParameters, BallParameters* blueBallParameters, QSizeF areaSize, std::uint32_t updateDelay, QObject* parent = nullptr);
-    void start();
+    BallAnimator(BallParameters* redBallParameters, BallParameters* blueBallParameters, QSizeF areaSize, QObject* parent = nullptr);
+    void randomPlaceBalls();
+    void start(std::uint32_t updateDelay);
 
 private:
+    void setBallPositions();
+    void setRandomBallPosition(BallParameters* ballParameters);
+
     void moveBalls();
     void updatePosition(BallParameters* ballParameters);
+
     void fixCollisions();
+
     void fixWallCollision(BallParameters* ballParameters);
     bool isOutsideRight(BallParameters* ballParameters);
     bool isOutsideTop(BallParameters* ballParameters);
@@ -23,6 +29,7 @@ private:
     static bool isLeftAngle(double angle);
     static bool isTopAngle(double angle);
     static bool isBottomAngle(double angle);
+
     void fixBallCollision();
     bool circlesIntersecting() const;
     double calculateCollisionAngle() const;

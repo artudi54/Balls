@@ -15,14 +15,14 @@ COMPONENTS
 set(SOURCES
     src/Ball.cpp
     src/BallColider.cpp
-    src/BallMoveAnimator.cpp
+        src/BallAnimator.cpp
     src/BallParameters.cpp
     src/main.cpp
 )
 set(HEADERS
     src/Ball.hpp
     src/BallColider.hpp
-    src/BallMoveAnimator.hpp
+        src/BallAnimator.hpp
     src/BallParameters.hpp
  )
 set(UI_FILES

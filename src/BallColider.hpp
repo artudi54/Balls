@@ -1,7 +1,7 @@
 #pragma once
 #include <QWidget>
 #include <QSlider>
-#include <BallMoveAnimator.hpp>
+#include <BallAnimator.hpp>
 #include <BallParameters.hpp>
 #include <Ball.hpp>
 
@@ -17,16 +17,14 @@ public:
 
 private:
     void connectSignals();
-    void setRedBallParameters();
-    void setBlueBallParameters();
-    void setBaseBallParameters(BallParameters* parameters);
-    void placeBalls();
+    void setRedBallColors();
+    void setBlueBallColors();
     void updateSliderValueWithoutNotifying(QSlider* slider, double value);
 
     Ui::BallColider* ui;
     BallParameters* redBallParameters;
     BallParameters* blueBallParameters;
-    BallMoveAnimator* animator;
+    BallAnimator* animator;
     Ball* redBall;
     Ball* blueBall;
 };

@@ -1,30 +1,63 @@
-#include "BallMoveAnimator.hpp"
+#include "BallAnimator.hpp"
 #include <cmath>
+#include <ctime>
+#include <random>
 
-BallMoveAnimator::BallMoveAnimator(BallParameters *redBallParameters, BallParameters *blueBallParameters,
-                                   QSizeF areaSize, std::uint32_t updateDelay, QObject *parent)
+static std::mt19937 randomEngine(static_cast<std::mt19937::result_type>(std::time(nullptr)));
+
+BallAnimator::BallAnimator(BallParameters *redBallParameters, BallParameters *blueBallParameters, QSizeF areaSize, QObject *parent)
     : QObject(parent)
     , redBallParameters(redBallParameters)
     , blueBallParameters(blueBallParameters)
     , areaSize(areaSize)
-    , updateDelay(updateDelay)
+    , updateDelay(0)
     , timer(this)
     , ballsColliding(false) {
-    connect(&timer, &QTimer::timeout, this, &BallMoveAnimator::moveBalls);
-    timer.setInterval(static_cast<int>(updateDelay));
+    connect(&timer, &QTimer::timeout, this, &BallAnimator::moveBalls);
 }
 
-void BallMoveAnimator::start() {
-    timer.start();
+void BallAnimator::randomPlaceBalls() {
+    std::uniform_real_distribution<double> dist(-M_PI, M_PI);
+    redBallParameters->setSpeed(100.0);
+    redBallParameters->setDirectionAngle(dist(randomEngine));
+    redBallParameters->setRadius(50.0);
+
+    blueBallParameters->setSpeed(100.0);
+    blueBallParameters->setDirectionAngle(dist(randomEngine));
+    blueBallParameters->setRadius(50.0);
+
+    setBallPositions();
 }
 
-void BallMoveAnimator::moveBalls() {
+void BallAnimator::start(std::uint32_t updateDelay) {
+    this->updateDelay = updateDelay;
+    timer.start(static_cast<int>(updateDelay));
+}
+
+void BallAnimator::setBallPositions() {
+    setRandomBallPosition(redBallParameters);
+    do {
+        setRandomBallPosition(blueBallParameters);
+    } while (circlesIntersecting());
+}
+
+void BallAnimator::setRandomBallPosition(BallParameters *ballParameters) {
+    double width = areaSize.width();
+    double height = areaSize.height();
+
+    std::uniform_real_distribution<double> redXDist(ballParameters->getRadius(), width - ballParameters->getRadius());
+    std::uniform_real_distribution<double> redYDist(ballParameters->getRadius(), height - ballParameters->getRadius());
+
+    ballParameters->setPosition(QPointF(redXDist(randomEngine), redYDist(randomEngine)));
+}
+
+void BallAnimator::moveBalls() {
     updatePosition(redBallParameters);
     updatePosition(blueBallParameters);
     fixCollisions();
 }
 
-void BallMoveAnimator::updatePosition(BallParameters *ballParameters) {
+void BallAnimator::updatePosition(BallParameters *ballParameters) {
     double time = updateDelay / 1000.0;
     double distance = ballParameters->getSpeed() * time;
     double distanceX = std::cos(ballParameters->getDirectionAngle()) * distance;
@@ -33,14 +66,14 @@ void BallMoveAnimator::updatePosition(BallParameters *ballParameters) {
     ballParameters->setPosition(nextPosition);
 }
 
-void BallMoveAnimator::fixCollisions() {
+void BallAnimator::fixCollisions() {
     fixWallCollision(redBallParameters);
     fixWallCollision(blueBallParameters);
     fixBallCollision();
 }
 
 
-void BallMoveAnimator::fixWallCollision(BallParameters *ballParameters) {
+void BallAnimator::fixWallCollision(BallParameters *ballParameters) {
     double angle = ballParameters->getDirectionAngle();
     double speedX = ballParameters->getSpeed() * std::cos(angle);
     double speedY = ballParameters->getSpeed() * std::sin(angle);
@@ -56,40 +89,40 @@ void BallMoveAnimator::fixWallCollision(BallParameters *ballParameters) {
         ballParameters->setDirectionAngle(std::atan2(-speedY, speedX));
 }
 
-bool BallMoveAnimator::isOutsideRight(BallParameters* ballParameters) {
+bool BallAnimator::isOutsideRight(BallParameters* ballParameters) {
     return ballParameters->getPosition().x() + ballParameters->getRadius() > areaSize.width();
 }
 
-bool BallMoveAnimator::isOutsideTop(BallParameters* ballParameters) {
+bool BallAnimator::isOutsideTop(BallParameters* ballParameters) {
     return ballParameters->getPosition().y() + ballParameters->getRadius() > areaSize.height();
 }
 
-bool BallMoveAnimator::isOutsideLeft(BallParameters* ballParameters) {
+bool BallAnimator::isOutsideLeft(BallParameters* ballParameters) {
     return ballParameters->getPosition().x() - ballParameters->getRadius() < 0.0;
 }
 
-bool BallMoveAnimator::isOutsideBottom(BallParameters* ballParameters) {
+bool BallAnimator::isOutsideBottom(BallParameters* ballParameters) {
     return ballParameters->getPosition().y() - ballParameters->getRadius() < 0.0;
 }
 
-bool BallMoveAnimator::isRightAngle(double angle) {
+bool BallAnimator::isRightAngle(double angle) {
     return angle >= -M_PI_2 && angle <= M_PI_2;
 }
 
-bool BallMoveAnimator::isLeftAngle(double angle) {
+bool BallAnimator::isLeftAngle(double angle) {
     return angle <= -M_PI_2 || angle >= M_PI_2;
 }
 
-bool BallMoveAnimator::isTopAngle(double angle) {
+bool BallAnimator::isTopAngle(double angle) {
     return angle >= 0.0;
 }
 
-bool BallMoveAnimator::isBottomAngle(double angle) {
+bool BallAnimator::isBottomAngle(double angle) {
     return angle <= 0.0;
 }
 
 
-void BallMoveAnimator::fixBallCollision() {
+void BallAnimator::fixBallCollision() {
     double lSpeed = redBallParameters->getSpeed();
     double lAngle = redBallParameters->getDirectionAngle();
     double rSpeed = blueBallParameters->getSpeed();
@@ -129,7 +162,7 @@ void BallMoveAnimator::fixBallCollision() {
     }
 }
 
-bool BallMoveAnimator::circlesIntersecting() const {
+bool BallAnimator::circlesIntersecting() const {
     QPointF redPoint = redBallParameters->getPosition();
     QPointF bluePoint = blueBallParameters->getPosition();
     double redRadius = redBallParameters->getRadius();
@@ -138,7 +171,7 @@ bool BallMoveAnimator::circlesIntersecting() const {
     return distance < redRadius + blueRadius;
 }
 
-double BallMoveAnimator::calculateCollisionAngle() const {
+double BallAnimator::calculateCollisionAngle() const {
     QPointF redPoint = redBallParameters->getPosition();
     QPointF bluePoint = blueBallParameters->getPosition();
     return std::atan2(redPoint.y() - bluePoint.y(), redPoint.x() - bluePoint.x());

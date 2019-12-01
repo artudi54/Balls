@@ -5,19 +5,17 @@
 Ball::Ball(BallParameters* ballParameters, QWidget* parent)
     : QWidget(parent)
     , ballParameters(ballParameters) {
-    connect(ballParameters, &BallParameters::speedChanged, this, &Ball::scheduleBallRedraw); 
-    connect(ballParameters, &BallParameters::directionAngleChanged, this, &Ball::scheduleBallRedraw); 
+    connect(ballParameters, &BallParameters::speedChanged, this, &Ball::scheduleBallRedraw);
+    connect(ballParameters, &BallParameters::directionAngleChanged, this, &Ball::scheduleBallRedraw);
     connect(ballParameters, &BallParameters::radiusChanged, this, &Ball::updateBallGeometry); 
     connect(ballParameters, &BallParameters::positionChanged, this, &Ball::updateBallGeometry); 
-    connect(ballParameters, &BallParameters::borderColorChanged, this, &Ball::scheduleBallRedraw); 
-    connect(ballParameters, &BallParameters::circleColorChanged, this, &Ball::scheduleBallRedraw); 
+    connect(ballParameters, &BallParameters::borderColorChanged, this, &Ball::scheduleBallRedraw);
+    connect(ballParameters, &BallParameters::circleColorChanged, this, &Ball::scheduleBallRedraw);
 
     updateBallGeometry();
 }
 
 void Ball::paintEvent(QPaintEvent* event) {
-    QWidget::paintEvent(event);
-
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing, true);
 
@@ -26,8 +24,7 @@ void Ball::paintEvent(QPaintEvent* event) {
     painter.setPen(QPen(ballParameters->getCircleColor(), fillWidth));
     painter.drawEllipse(fillWidth / 2, fillWidth / 2, width() - fillWidth, height() - fillWidth);
 
-
-    int borderWidth = 6;
+    int borderWidth = 4;
     painter.setBrush(QBrush());
     painter.setPen(QPen(ballParameters->getBorderColor(), borderWidth));
     painter.drawEllipse(borderWidth / 2, borderWidth / 2, width() - borderWidth, height() - borderWidth);
