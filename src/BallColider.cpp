@@ -34,18 +34,18 @@ BallColider::~BallColider() {
 
 void BallColider::connectSignals() {
     // speed two way value binding
-    connect(ui->blueBallSpeedSlider, &QSlider::valueChanged, blueBallParameters, &BallParameters::setSpeed);
-//    connect(blueBallParameters, &BallParameters::speedChanged, ui->blueBallSpeedSlider, &QSlider::setValue);
-
     connect(ui->redBallSpeedSlider, &QSlider::valueChanged, redBallParameters, &BallParameters::setSpeed);
-//    connect(redBallParameters, &BallParameters::speedChanged, ui->redBallSpeedSlider, &QSlider::setValue);
+    connect(redBallParameters, &BallParameters::speedChanged, this, [&](double value) { updateSliderValueWithoutNotyfying(ui->redBallSpeedSlider, value);});
+
+    connect(ui->blueBallSpeedSlider, &QSlider::valueChanged, blueBallParameters, &BallParameters::setSpeed);
+    connect(blueBallParameters, &BallParameters::speedChanged, this, [&](double value) { updateSliderValueWithoutNotyfying(ui->blueBallSpeedSlider, value);});
 
     // radius two way value binding
-    connect(ui->blueBallRadiusSlider, &QSlider::valueChanged, blueBallParameters, &BallParameters::setRadius);
-//    connect(blueBallParameters, &BallParameters::radiusChanged, ui->blueBallRadiusSlider, &QSlider::setValue);
-
     connect(ui->redBallRadiusSlider, &QSlider::valueChanged, redBallParameters, &BallParameters::setRadius);
-//    connect(redBallParameters, &BallParameters::radiusChanged, ui->redBallRadiusSlider, &QSlider::setValue);
+    connect(redBallParameters, &BallParameters::radiusChanged, this, [&](double value) { updateSliderValueWithoutNotyfying(ui->redBallRadiusSlider, value);});
+
+    connect(ui->blueBallRadiusSlider, &QSlider::valueChanged, blueBallParameters, &BallParameters::setRadius);
+    connect(blueBallParameters, &BallParameters::radiusChanged, this, [&](double value) { updateSliderValueWithoutNotyfying(ui->blueBallRadiusSlider, value);});
 }
 
 void BallColider::setRedBallParameters() {
@@ -78,4 +78,10 @@ void BallColider::placeBalls() {
     std::uniform_real_distribution<double> blueXDist(blueBallParameters->getRadius(), width -  redBallParameters->getRadius());
     std::uniform_real_distribution<double> blueYDist(blueBallParameters->getRadius(), height - redBallParameters->getRadius());
     blueBallParameters->setPosition(QPointF(blueXDist(randomEngine), blueYDist(randomEngine)));
+}
+
+void BallColider::updateSliderValueWithoutNotyfying(QSlider *slider, double value) {
+    slider->blockSignals(true);
+    slider->setValue(static_cast<int>(value));
+    slider->blockSignals(false);
 }

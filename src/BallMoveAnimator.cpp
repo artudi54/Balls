@@ -103,12 +103,6 @@ void BallMoveAnimator::fixBallColision() {
         if (!ballsColliding) {
             double collisionAngle = std::atan2(lPoint.y() - rPoint.y(), lPoint.x() - rPoint.x());
 
-            double lSpeedX = lSpeed * std::cos(lAngle);
-            double lSpeedY = lSpeed * std::sin(lAngle);
-            double rSpeedX = rSpeed * std::cos(rAngle);
-            double rSpeedY = rSpeed * std::sin(rAngle);
-
-
             double lSpeedU = lSpeed * std::cos(lAngle - collisionAngle);
             double lSpeedW = lSpeed * std::sin(lAngle - collisionAngle);
             double rSpeedU = rSpeed * std::cos(rAngle - collisionAngle);
@@ -124,17 +118,16 @@ void BallMoveAnimator::fixBallColision() {
             double lAngleP = std::atan2(lSpeedW, lSpeedU);
             double rAngleP = std::atan2(rSpeedW, rSpeedU);
 
-            lSpeedX = lSpeedP * std::cos(lAngleP + collisionAngle);
-            lSpeedY = lSpeedP * std::sin(lAngleP + collisionAngle);
-            rSpeedX = rSpeedP * std::cos(rAngleP + collisionAngle);
-            rSpeedY = rSpeedP * std::sin(rAngleP + collisionAngle);
+            double lSpeedX = lSpeedP * std::cos(lAngleP + collisionAngle);
+            double lSpeedY = lSpeedP * std::sin(lAngleP + collisionAngle);
+            double rSpeedX = rSpeedP * std::cos(rAngleP + collisionAngle);
+            double rSpeedY = rSpeedP * std::sin(rAngleP + collisionAngle);
 
 
             redBallParameters->setDirectionAngle(std::atan2(lSpeedY, lSpeedX));
             redBallParameters->setSpeed(std::hypot(lSpeedX, lSpeedY));
             blueBallParameters->setDirectionAngle(std::atan2(rSpeedY, rSpeedX));
             blueBallParameters->setSpeed(std::hypot(rSpeedX, rSpeedY));
-
 
             ballsColliding = true;
         }
