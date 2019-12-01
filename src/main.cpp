@@ -1,6 +1,4 @@
 #include <QApplication>
-#include <BallParameters.hpp>
-#include <Ball.hpp>
 #include <BallColider.hpp>
 
 

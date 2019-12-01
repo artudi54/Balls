@@ -2,6 +2,14 @@
 <ui version="4.0">
  <class>BallColider</class>
  <widget class="QWidget" name="BallColider">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>650</width>
+    <height>600</height>
+   </rect>
+  </property>
   <property name="minimumSize">
    <size>
     <width>650</width>
@@ -10,7 +18,7 @@
   </property>
   <property name="maximumSize">
    <size>
-    <width>16777215</width>
+    <width>650</width>
     <height>600</height>
    </size>
   </property>
@@ -35,6 +43,18 @@
    </property>
    <item>
     <widget class="QWidget" name="ballWidget" native="true">
+     <property name="minimumSize">
+      <size>
+       <width>610</width>
+       <height>430</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>610</width>
+       <height>430</height>
+      </size>
+     </property>
      <property name="styleSheet">
       <string notr="true">QWidget {
 	background: &quot;white&quot;
@@ -107,7 +127,7 @@
         <number>10</number>
        </property>
        <property name="maximum">
-        <number>200</number>
+        <number>150</number>
        </property>
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -120,7 +140,7 @@
         <number>10</number>
        </property>
        <property name="maximum">
-        <number>200</number>
+        <number>150</number>
        </property>
        <property name="orientation">
         <enum>Qt::Horizontal</enum>

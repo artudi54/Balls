@@ -11,6 +11,7 @@ BallColider::BallColider(QWidget *parent)
     , ui(new Ui::BallColider)
     , redBallParameters(new BallParameters(this))
     , blueBallParameters(new BallParameters(this))
+    , animator(nullptr)
     , redBall(nullptr)
     , blueBall(nullptr) {
     ui->setupUi(this);
@@ -22,6 +23,9 @@ BallColider::BallColider(QWidget *parent)
     setRedBallParameters();
     setBlueBallParameters();
     placeBalls();
+
+    animator = new BallMoveAnimator(redBallParameters, blueBallParameters, ui->ballWidget->size(), 10, this);
+    animator->start();
 }
 
 BallColider::~BallColider() {
@@ -31,10 +35,10 @@ BallColider::~BallColider() {
 void BallColider::connectSignals() {
     // speed two way value binding
     connect(ui->blueBallSpeedSlider, &QSlider::valueChanged, blueBallParameters, &BallParameters::setSpeed);
-    connect(blueBallParameters, &BallParameters::speedChanged, ui->blueBallRadiusSlider, &QSlider::setValue);
+    connect(blueBallParameters, &BallParameters::speedChanged, ui->blueBallSpeedSlider, &QSlider::setValue);
 
     connect(ui->redBallSpeedSlider, &QSlider::valueChanged, redBallParameters, &BallParameters::setSpeed);
-    connect(redBallParameters, &BallParameters::speedChanged, ui->redBallRadiusSlider, &QSlider::setValue);
+    connect(redBallParameters, &BallParameters::speedChanged, ui->redBallSpeedSlider, &QSlider::setValue);
 
     // radius two way value binding
     connect(ui->blueBallRadiusSlider, &QSlider::valueChanged, blueBallParameters, &BallParameters::setRadius);
@@ -57,12 +61,21 @@ void BallColider::setBlueBallParameters() {
 }
 
 void BallColider::setBaseBallParametrs(BallParameters *parameters) {
-    std::uniform_real_distribution<double> dist(0.0, 2 * M_PI);
+    std::uniform_real_distribution<double> dist(-M_PI, M_PI);
     parameters->setSpeed(100.0);
     parameters->setDirectionAngle(dist(randomEngine));
     parameters->setRadius(100.0);
 }
 
 void BallColider::placeBalls() {
+    double width = ui->ballWidget->width();
+    double height = ui->ballWidget->height();
 
+    std::uniform_real_distribution<double> redXDist(redBallParameters->getRadius(), width -  redBallParameters->getRadius());
+    std::uniform_real_distribution<double> redYDist(redBallParameters->getRadius(), height - redBallParameters->getRadius());
+    redBallParameters->setPosition(QPointF(redXDist(randomEngine), redYDist(randomEngine)));
+
+    std::uniform_real_distribution<double> blueXDist(blueBallParameters->getRadius(), width -  redBallParameters->getRadius());
+    std::uniform_real_distribution<double> blueYDist(blueBallParameters->getRadius(), height - redBallParameters->getRadius());
+    blueBallParameters->setPosition(QPointF(blueXDist(randomEngine), blueYDist(randomEngine)));
 }

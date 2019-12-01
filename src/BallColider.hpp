@@ -1,5 +1,6 @@
 #pragma once
 #include <QWidget>
+#include <BallMoveAnimator.hpp>
 #include <BallParameters.hpp>
 #include <Ball.hpp>
 
@@ -23,6 +24,7 @@ private:
     Ui::BallColider* ui;
     BallParameters* redBallParameters;
     BallParameters* blueBallParameters;
+    BallMoveAnimator* animator;
     Ball* redBall;
     Ball* blueBall;
 };
