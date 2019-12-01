@@ -64,7 +64,7 @@ void BallColider::setBaseBallParametrs(BallParameters *parameters) {
     std::uniform_real_distribution<double> dist(-M_PI, M_PI);
     parameters->setSpeed(100.0);
     parameters->setDirectionAngle(dist(randomEngine));
-    parameters->setRadius(100.0);
+    parameters->setRadius(50.0);
 }
 
 void BallColider::placeBalls() {

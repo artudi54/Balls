@@ -19,6 +19,10 @@ private:
     bool isOutsideTop(double radius, QPointF position);
     bool isOutsideLeft(double radius, QPointF position);
     bool isOutsideBottom(double radius, QPointF position);
+    static bool isRightAngle(double angle);
+    static bool isLeftAngle(double angle);
+    static bool isTopAngle(double angle);
+    static bool isBottomAngle(double angle);
     bool fixBallColision();
 
     BallParameters* redBallParameters;
@@ -26,4 +30,5 @@ private:
     QSizeF areaSize;
     std::uint32_t updateDelay;
     QTimer timer;
+    bool ballsColliding;
 };

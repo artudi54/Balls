@@ -8,7 +8,8 @@ BallMoveAnimator::BallMoveAnimator(BallParameters *redBallParameters, BallParame
     , blueBallParameters(blueBallParameters)
     , areaSize(areaSize)
     , updateDelay(updateDelay)
-    , timer(this) {
+    , timer(this)
+    , ballsColliding(false) {
     connect(&timer, &QTimer::timeout, this, &BallMoveAnimator::moveBalls);
     timer.setInterval(static_cast<int>(updateDelay));
 }
@@ -46,9 +47,11 @@ void BallMoveAnimator::fixWallCollision(BallParameters *ballParameters) {
     double speedX = ballParameters->getSpeed() * std::cos(angle);
     double speedY = ballParameters->getSpeed() * std::sin(angle);
 
-    if (isOutsideRight(radius, position) || isOutsideLeft(radius, position))
+    if ((isOutsideRight(radius, position) && isRightAngle(angle)) ||
+        (isOutsideLeft(radius, position) && isLeftAngle(angle)))
         ballParameters->setDirectionAngle(std::atan2(speedY, -speedX));
-    else if (isOutsideTop(radius, position) || isOutsideBottom(radius, position))
+    else if ((isOutsideTop(radius, position) && isTopAngle(angle)) ||
+             (isOutsideBottom(radius, position) && isBottomAngle(angle)))
         ballParameters->setDirectionAngle(std::atan2(-speedY, speedX));
 }
 
@@ -68,6 +71,23 @@ bool BallMoveAnimator::isOutsideBottom(double radius, QPointF position) {
     return position.y() - radius < 0.0;
 }
 
+bool BallMoveAnimator::isRightAngle(double angle) {
+    return angle >= -M_PI_2 && angle <= M_PI_2;
+}
+
+bool BallMoveAnimator::isLeftAngle(double angle) {
+    return angle <= -M_PI_2 || angle >= M_PI_2;
+}
+
+bool BallMoveAnimator::isTopAngle(double angle) {
+    return angle >= 0.0;
+}
+
+bool BallMoveAnimator::isBottomAngle(double angle) {
+    return angle <= 0.0;
+}
+
+
 bool BallMoveAnimator::fixBallColision() {
     QPointF lPoint = redBallParameters->getPosition();
     QPointF rPoint = blueBallParameters->getPosition();
@@ -75,6 +95,20 @@ bool BallMoveAnimator::fixBallColision() {
     double rRadius = blueBallParameters->getRadius();
     double distance = std::hypot(lPoint.x() - rPoint.x(), lPoint.y() - rPoint.y());
     if (distance < lRadius + rRadius) {
+        if (!ballsColliding) {
+            double lAngle = redBallParameters->getDirectionAngle();
+            double rAngle = blueBallParameters->getDirectionAngle();
+            redBallParameters->setDirectionAngle(rAngle);
+            blueBallParameters->setDirectionAngle(lAngle);
 
+            double lSpeed = redBallParameters->getSpeed();
+            double rSpeed = blueBallParameters->getSpeed();
+            redBallParameters->setSpeed(rSpeed);
+            blueBallParameters->setSpeed(lSpeed);
+            ballsColliding = true;
+        }
+    }
+    else {
+        ballsColliding = false;
     }
 }
