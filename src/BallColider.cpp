@@ -24,7 +24,7 @@ BallColider::BallColider(QWidget *parent)
     setBlueBallParameters();
     placeBalls();
 
-    animator = new BallMoveAnimator(redBallParameters, blueBallParameters, ui->ballWidget->size(), 10, this);
+    animator = new BallMoveAnimator(redBallParameters, blueBallParameters, ui->ballWidget->size(), 5, this);
     animator->start();
 }
 
@@ -35,17 +35,17 @@ BallColider::~BallColider() {
 void BallColider::connectSignals() {
     // speed two way value binding
     connect(ui->blueBallSpeedSlider, &QSlider::valueChanged, blueBallParameters, &BallParameters::setSpeed);
-    connect(blueBallParameters, &BallParameters::speedChanged, ui->blueBallSpeedSlider, &QSlider::setValue);
+//    connect(blueBallParameters, &BallParameters::speedChanged, ui->blueBallSpeedSlider, &QSlider::setValue);
 
     connect(ui->redBallSpeedSlider, &QSlider::valueChanged, redBallParameters, &BallParameters::setSpeed);
-    connect(redBallParameters, &BallParameters::speedChanged, ui->redBallSpeedSlider, &QSlider::setValue);
+//    connect(redBallParameters, &BallParameters::speedChanged, ui->redBallSpeedSlider, &QSlider::setValue);
 
     // radius two way value binding
     connect(ui->blueBallRadiusSlider, &QSlider::valueChanged, blueBallParameters, &BallParameters::setRadius);
-    connect(blueBallParameters, &BallParameters::radiusChanged, ui->blueBallRadiusSlider, &QSlider::setValue);
+//    connect(blueBallParameters, &BallParameters::radiusChanged, ui->blueBallRadiusSlider, &QSlider::setValue);
 
     connect(ui->redBallRadiusSlider, &QSlider::valueChanged, redBallParameters, &BallParameters::setRadius);
-    connect(redBallParameters, &BallParameters::radiusChanged, ui->redBallRadiusSlider, &QSlider::setValue);
+//    connect(redBallParameters, &BallParameters::radiusChanged, ui->redBallRadiusSlider, &QSlider::setValue);
 }
 
 void BallColider::setRedBallParameters() {

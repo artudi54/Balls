@@ -23,7 +23,7 @@ private:
     static bool isLeftAngle(double angle);
     static bool isTopAngle(double angle);
     static bool isBottomAngle(double angle);
-    bool fixBallColision();
+    void fixBallColision();
 
     BallParameters* redBallParameters;
     BallParameters* blueBallParameters;
