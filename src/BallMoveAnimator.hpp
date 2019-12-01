@@ -15,15 +15,17 @@ private:
     void updatePosition(BallParameters* ballParameters);
     void fixCollisions();
     void fixWallCollision(BallParameters* ballParameters);
-    bool isOutsideRight(double radius, QPointF position);
-    bool isOutsideTop(double radius, QPointF position);
-    bool isOutsideLeft(double radius, QPointF position);
-    bool isOutsideBottom(double radius, QPointF position);
+    bool isOutsideRight(BallParameters* ballParameters);
+    bool isOutsideTop(BallParameters* ballParameters);
+    bool isOutsideLeft(BallParameters* ballParameters);
+    bool isOutsideBottom(BallParameters* ballParameters);
     static bool isRightAngle(double angle);
     static bool isLeftAngle(double angle);
     static bool isTopAngle(double angle);
     static bool isBottomAngle(double angle);
-    void fixBallColision();
+    void fixBallCollision();
+    bool circlesIntersecting() const;
+    double calculateCollisionAngle() const;
 
     BallParameters* redBallParameters;
     BallParameters* blueBallParameters;

@@ -19,9 +19,9 @@ private:
     void connectSignals();
     void setRedBallParameters();
     void setBlueBallParameters();
-    void setBaseBallParametrs(BallParameters* parameters);
+    void setBaseBallParameters(BallParameters* parameters);
     void placeBalls();
-    void updateSliderValueWithoutNotyfying(QSlider* slider, double value);
+    void updateSliderValueWithoutNotifying(QSlider* slider, double value);
 
     Ui::BallColider* ui;
     BallParameters* redBallParameters;

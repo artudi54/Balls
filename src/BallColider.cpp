@@ -35,32 +35,36 @@ BallColider::~BallColider() {
 void BallColider::connectSignals() {
     // speed two way value binding
     connect(ui->redBallSpeedSlider, &QSlider::valueChanged, redBallParameters, &BallParameters::setSpeed);
-    connect(redBallParameters, &BallParameters::speedChanged, this, [&](double value) { updateSliderValueWithoutNotyfying(ui->redBallSpeedSlider, value);});
+    connect(redBallParameters, &BallParameters::speedChanged, this,
+            [&](double value) { updateSliderValueWithoutNotifying(ui->redBallSpeedSlider, value);});
 
     connect(ui->blueBallSpeedSlider, &QSlider::valueChanged, blueBallParameters, &BallParameters::setSpeed);
-    connect(blueBallParameters, &BallParameters::speedChanged, this, [&](double value) { updateSliderValueWithoutNotyfying(ui->blueBallSpeedSlider, value);});
+    connect(blueBallParameters, &BallParameters::speedChanged, this,
+            [&](double value) { updateSliderValueWithoutNotifying(ui->blueBallSpeedSlider, value);});
 
     // radius two way value binding
     connect(ui->redBallRadiusSlider, &QSlider::valueChanged, redBallParameters, &BallParameters::setRadius);
-    connect(redBallParameters, &BallParameters::radiusChanged, this, [&](double value) { updateSliderValueWithoutNotyfying(ui->redBallRadiusSlider, value);});
+    connect(redBallParameters, &BallParameters::radiusChanged, this,
+            [&](double value) { updateSliderValueWithoutNotifying(ui->redBallRadiusSlider, value);});
 
     connect(ui->blueBallRadiusSlider, &QSlider::valueChanged, blueBallParameters, &BallParameters::setRadius);
-    connect(blueBallParameters, &BallParameters::radiusChanged, this, [&](double value) { updateSliderValueWithoutNotyfying(ui->blueBallRadiusSlider, value);});
+    connect(blueBallParameters, &BallParameters::radiusChanged, this,
+            [&](double value) { updateSliderValueWithoutNotifying(ui->blueBallRadiusSlider, value);});
 }
 
 void BallColider::setRedBallParameters() {
-    setBaseBallParametrs(redBallParameters);
+    setBaseBallParameters(redBallParameters);
     redBallParameters->setBorderColor(Qt::GlobalColor::darkRed);
     redBallParameters->setCircleColor(Qt::GlobalColor::red);
 }
 
 void BallColider::setBlueBallParameters() {
-    setBaseBallParametrs(blueBallParameters);
+    setBaseBallParameters(blueBallParameters);
     blueBallParameters->setBorderColor(Qt::GlobalColor::darkBlue);
     blueBallParameters->setCircleColor(Qt::GlobalColor::cyan);
 }
 
-void BallColider::setBaseBallParametrs(BallParameters *parameters) {
+void BallColider::setBaseBallParameters(BallParameters *parameters) {
     std::uniform_real_distribution<double> dist(-M_PI, M_PI);
     parameters->setSpeed(100.0);
     parameters->setDirectionAngle(dist(randomEngine));
@@ -80,7 +84,7 @@ void BallColider::placeBalls() {
     blueBallParameters->setPosition(QPointF(blueXDist(randomEngine), blueYDist(randomEngine)));
 }
 
-void BallColider::updateSliderValueWithoutNotyfying(QSlider *slider, double value) {
+void BallColider::updateSliderValueWithoutNotifying(QSlider *slider, double value) {
     slider->blockSignals(true);
     slider->setValue(static_cast<int>(value));
     slider->blockSignals(false);

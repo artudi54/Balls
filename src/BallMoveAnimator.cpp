@@ -36,39 +36,40 @@ void BallMoveAnimator::updatePosition(BallParameters *ballParameters) {
 void BallMoveAnimator::fixCollisions() {
     fixWallCollision(redBallParameters);
     fixWallCollision(blueBallParameters);
-    fixBallColision();
+    fixBallCollision();
 }
 
 
 void BallMoveAnimator::fixWallCollision(BallParameters *ballParameters) {
-    double radius = ballParameters->getRadius();
     double angle = ballParameters->getDirectionAngle();
-    QPointF position = ballParameters->getPosition();
     double speedX = ballParameters->getSpeed() * std::cos(angle);
     double speedY = ballParameters->getSpeed() * std::sin(angle);
 
-    if ((isOutsideRight(radius, position) && isRightAngle(angle)) ||
-        (isOutsideLeft(radius, position) && isLeftAngle(angle)))
+    bool inverseX = (isOutsideRight(ballParameters) && isRightAngle(angle)) ||
+                    (isOutsideLeft(ballParameters) && isLeftAngle(angle));
+    if (inverseX)
         ballParameters->setDirectionAngle(std::atan2(speedY, -speedX));
-    else if ((isOutsideTop(radius, position) && isTopAngle(angle)) ||
-             (isOutsideBottom(radius, position) && isBottomAngle(angle)))
+
+    bool inverseY = (isOutsideTop(ballParameters) && isTopAngle(angle)) ||
+                    (isOutsideBottom(ballParameters) && isBottomAngle(angle));
+    if (inverseY)
         ballParameters->setDirectionAngle(std::atan2(-speedY, speedX));
 }
 
-bool BallMoveAnimator::isOutsideRight(double radius, QPointF position) {
-    return position.x() + radius > areaSize.width();
+bool BallMoveAnimator::isOutsideRight(BallParameters* ballParameters) {
+    return ballParameters->getPosition().x() + ballParameters->getRadius() > areaSize.width();
 }
 
-bool BallMoveAnimator::isOutsideTop(double radius, QPointF position) {
-    return position.y() + radius > areaSize.height();
+bool BallMoveAnimator::isOutsideTop(BallParameters* ballParameters) {
+    return ballParameters->getPosition().y() + ballParameters->getRadius() > areaSize.height();
 }
 
-bool BallMoveAnimator::isOutsideLeft(double radius, QPointF position) {
-    return position.x() - radius < 0.0;
+bool BallMoveAnimator::isOutsideLeft(BallParameters* ballParameters) {
+    return ballParameters->getPosition().x() - ballParameters->getRadius() < 0.0;
 }
 
-bool BallMoveAnimator::isOutsideBottom(double radius, QPointF position) {
-    return position.y() - radius < 0.0;
+bool BallMoveAnimator::isOutsideBottom(BallParameters* ballParameters) {
+    return ballParameters->getPosition().y() - ballParameters->getRadius() < 0.0;
 }
 
 bool BallMoveAnimator::isRightAngle(double angle) {
@@ -88,32 +89,24 @@ bool BallMoveAnimator::isBottomAngle(double angle) {
 }
 
 
-void BallMoveAnimator::fixBallColision() {
-    QPointF lPoint = redBallParameters->getPosition();
-    QPointF rPoint = blueBallParameters->getPosition();
-    double lRadius = redBallParameters->getRadius();
-    double rRadius = blueBallParameters->getRadius();
-    double distance = std::hypot(lPoint.x() - rPoint.x(), lPoint.y() - rPoint.y());
+void BallMoveAnimator::fixBallCollision() {
     double lSpeed = redBallParameters->getSpeed();
-    double rSpeed= blueBallParameters->getSpeed();
     double lAngle = redBallParameters->getDirectionAngle();
+    double rSpeed = blueBallParameters->getSpeed();
     double rAngle = blueBallParameters->getDirectionAngle();
 
-    if (distance < lRadius + rRadius) {
+    if (circlesIntersecting()) {
         if (!ballsColliding) {
-            double collisionAngle = std::atan2(lPoint.y() - rPoint.y(), lPoint.x() - rPoint.x());
+            double collisionAngle = calculateCollisionAngle();
 
             double lSpeedU = lSpeed * std::cos(lAngle - collisionAngle);
             double lSpeedW = lSpeed * std::sin(lAngle - collisionAngle);
             double rSpeedU = rSpeed * std::cos(rAngle - collisionAngle);
             double rSpeedW = rSpeed * std::sin(rAngle - collisionAngle);
-
-
             std::swap(lSpeedU, rSpeedU);
 
             double lSpeedP = std::hypot(lSpeedU, lSpeedW);
             double rSpeedP = std::hypot(rSpeedU, rSpeedW);
-
 
             double lAngleP = std::atan2(lSpeedW, lSpeedU);
             double rAngleP = std::atan2(rSpeedW, rSpeedU);
@@ -122,7 +115,6 @@ void BallMoveAnimator::fixBallColision() {
             double lSpeedY = lSpeedP * std::sin(lAngleP + collisionAngle);
             double rSpeedX = rSpeedP * std::cos(rAngleP + collisionAngle);
             double rSpeedY = rSpeedP * std::sin(rAngleP + collisionAngle);
-
 
             redBallParameters->setDirectionAngle(std::atan2(lSpeedY, lSpeedX));
             redBallParameters->setSpeed(std::hypot(lSpeedX, lSpeedY));
@@ -135,4 +127,19 @@ void BallMoveAnimator::fixBallColision() {
     else {
         ballsColliding = false;
     }
+}
+
+bool BallMoveAnimator::circlesIntersecting() const {
+    QPointF redPoint = redBallParameters->getPosition();
+    QPointF bluePoint = blueBallParameters->getPosition();
+    double redRadius = redBallParameters->getRadius();
+    double blueRadius = blueBallParameters->getRadius();
+    double distance = std::hypot(redPoint.x() - bluePoint.x(), redPoint.y() - bluePoint.y());
+    return distance < redRadius + blueRadius;
+}
+
+double BallMoveAnimator::calculateCollisionAngle() const {
+    QPointF redPoint = redBallParameters->getPosition();
+    QPointF bluePoint = blueBallParameters->getPosition();
+    return std::atan2(redPoint.y() - bluePoint.y(), redPoint.x() - bluePoint.x());
 }
