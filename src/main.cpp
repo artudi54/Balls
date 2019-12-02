@@ -1,12 +1,12 @@
 #include <QApplication>
-#include <BallCollider.hpp>
+#include <gui/BallWidget.hpp>
 
 
 int main(int argc, char** argv) {
     QApplication app(argc, argv);
 
-    BallCollider collider;
-    collider.show();
+    gui::BallWidget ballWidget;
+    ballWidget.show();
 
     return app.exec();
 }
