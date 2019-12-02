@@ -5,9 +5,7 @@
 Ball::Ball(BallParameters* ballParameters, QWidget* parent)
     : QWidget(parent)
     , ballParameters(ballParameters) {
-    connect(ballParameters, &BallParameters::speedChanged, this, &Ball::scheduleBallRedraw);
-    connect(ballParameters, &BallParameters::directionAngleChanged, this, &Ball::scheduleBallRedraw);
-    connect(ballParameters, &BallParameters::radiusChanged, this, &Ball::updateBallGeometry); 
+    connect(ballParameters, &BallParameters::radiusChanged, this, &Ball::updateBallGeometry);
     connect(ballParameters, &BallParameters::positionChanged, this, &Ball::updateBallGeometry); 
     connect(ballParameters, &BallParameters::borderColorChanged, this, &Ball::scheduleBallRedraw);
     connect(ballParameters, &BallParameters::circleColorChanged, this, &Ball::scheduleBallRedraw);
@@ -15,7 +13,7 @@ Ball::Ball(BallParameters* ballParameters, QWidget* parent)
     updateBallGeometry();
 }
 
-void Ball::paintEvent(QPaintEvent* event) {
+void Ball::paintEvent(QPaintEvent*) {
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing, true);
 

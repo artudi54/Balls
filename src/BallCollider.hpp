@@ -6,22 +6,26 @@
 #include <Ball.hpp>
 
 namespace Ui {
-    class BallColider;
+    class BallCollider;
 }
 
-class BallColider : public QWidget {
+class BallCollider : public QWidget {
     Q_OBJECT
 public:
-    explicit BallColider(QWidget *parent = nullptr);
-    ~BallColider() override;
+    explicit BallCollider(QWidget *parent = nullptr);
+    ~BallCollider() override;
 
 private:
     void connectSignals();
-    void setRedBallColors();
-    void setBlueBallColors();
+    void connectSpeedsTwoWay();
+    void connectRadiusesTwoWay();
+
+    void setBallColors();
+
+    void updateSliderValueWithoutNotifying(QSlider* slider, const std::pair<double, double>& value);
     void updateSliderValueWithoutNotifying(QSlider* slider, double value);
 
-    Ui::BallColider* ui;
+    Ui::BallCollider* ui;
     BallParameters* redBallParameters;
     BallParameters* blueBallParameters;
     BallAnimator* animator;

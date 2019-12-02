@@ -7,9 +7,12 @@ class BallParameters : public QObject {
     Q_OBJECT
 public:
     explicit BallParameters(QObject* parent = nullptr);
-    
-    double getSpeed() const;
-    void setSpeed(double speed);
+
+    const std::pair<double, double>& getSpeed() const;
+    void setSpeed(const std::pair<double, double>& speed);
+
+    double getSpeedValue() const;
+    void setSpeedValue(double speedValue);
 
     double getDirectionAngle() const;
     void setDirectionAngle(double directionAngle);
@@ -27,16 +30,14 @@ public:
     void setCircleColor(const QColor& circleColor);
 
 signals:
-    void speedChanged(double speed);
-    void directionAngleChanged(double directionAngle);
+    void speedChanged(const std::pair<double, double>& speed);
     void radiusChanged(double radius);
     void positionChanged(const QPointF& position);
     void borderColorChanged(const QColor& borderColor);
     void circleColorChanged(const QColor& circleColor);
 
 private:
-    double speed;
-    double directionAngle;
+    std::pair<double, double> speed;
     double radius;
     QPointF position;
     QColor borderColor;

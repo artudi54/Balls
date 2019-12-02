@@ -1,32 +1,39 @@
 #include "BallParameters.hpp"
+#include <cmath>
 
 BallParameters::BallParameters(QObject* parent)
     : QObject(parent)
-    , speed(0.0)
-    , directionAngle(0.0)
+    , speed(0.0, 0.0)
     , radius(0.0)
     , position() {}
 
-double BallParameters::getSpeed() const {
+const std::pair<double, double> &BallParameters::getSpeed() const {
     return speed;
 }
 
-void BallParameters::setSpeed(double speed) {
-    if (this-> speed == speed)
+void BallParameters::setSpeed(const std::pair<double, double> &speed) {
+    if (this->speed == speed)
         return;
     this->speed = speed;
     emit speedChanged(this->speed);
 }
 
+double BallParameters::getSpeedValue() const {
+    return std::hypot(speed.first, speed.second);
+}
+
+void BallParameters::setSpeedValue(double speedValue) {
+    double angle = getDirectionAngle();
+    setSpeed({speedValue * std::cos(angle), speedValue * std::sin(angle)});
+}
+
 double BallParameters::getDirectionAngle() const {
-    return directionAngle;
+    return std::atan2(speed.second, speed.first);
 }
 
 void BallParameters::setDirectionAngle(double directionAngle) {
-    if (this->directionAngle == directionAngle)
-        return;
-    this->directionAngle = directionAngle;
-    emit directionAngleChanged(this->directionAngle);
+    double speedValue = getSpeedValue();
+    setSpeed({speedValue * std::cos(directionAngle), speedValue * std::sin(directionAngle)});
 }
 
 double BallParameters::getRadius() const {

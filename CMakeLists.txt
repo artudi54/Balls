@@ -14,19 +14,19 @@ COMPONENTS
 # Executable
 set(SOURCES
     src/Ball.cpp
-    src/BallColider.cpp
+        src/BallCollider.cpp
         src/BallAnimator.cpp
     src/BallParameters.cpp
     src/main.cpp
 )
 set(HEADERS
     src/Ball.hpp
-    src/BallColider.hpp
+        src/BallCollider.hpp
         src/BallAnimator.hpp
     src/BallParameters.hpp
  )
 set(UI_FILES
-    ui/BallColider.ui
+        ui/BallCollider.ui
 )
 qt5_wrap_ui(SOURCES ${UI_FILES})
 add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS} ${UI_SOURCES} ${RESOURCES})

@@ -1,12 +1,12 @@
 #include <QApplication>
-#include <BallColider.hpp>
+#include <BallCollider.hpp>
 
 
 int main(int argc, char** argv) {
     QApplication app(argc, argv);
 
-    BallColider colider;
-    colider.show();
+    BallCollider collider;
+    collider.show();
 
     return app.exec();
 }
