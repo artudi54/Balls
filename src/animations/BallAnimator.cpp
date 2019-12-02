@@ -2,7 +2,7 @@
 #include <cmath>
 #include <ctime>
 #include <random>
-
+constexpr double PI = 3.14159265359;
 static std::mt19937 randomEngine(static_cast<std::mt19937::result_type>(std::time(nullptr)));
 
 namespace animations {
@@ -18,7 +18,7 @@ namespace animations {
     }
 
     void BallAnimator::randomPlaceBalls() {
-        std::uniform_real_distribution<double> dist(-M_PI, M_PI);
+        std::uniform_real_distribution<double> dist(-PI, PI);
         redBallParameters->setSpeedValue(100.0);
         redBallParameters->setDirectionAngle(dist(randomEngine));
         redBallParameters->setRadius(50.0);

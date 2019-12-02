@@ -29,7 +29,12 @@ set(UI_FILES
     ui/BallWidget.ui
 )
 qt5_wrap_ui(SOURCES ${UI_FILES})
-add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS} ${UI_SOURCES} ${RESOURCES})
+
+if(WIN32)
+	set(APP_TYPE WIN32)
+endif()
+
+add_executable(${PROJECT_NAME} ${APP_TYPE} ${SOURCES} ${HEADERS} ${UI_SOURCES} ${RESOURCES})
 
 # Compile options
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_14)
