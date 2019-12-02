@@ -5,7 +5,7 @@
 
 namespace gui {
     class Ball : public QWidget {
-    Q_OBJECT
+        Q_OBJECT
     public:
         explicit Ball(model::BallParameters *ballParameters, QWidget *parent = nullptr);
 

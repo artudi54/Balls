@@ -11,10 +11,9 @@ namespace Ui {
 
 namespace gui {
     class BallWidget : public QWidget {
-    Q_OBJECT
+        Q_OBJECT
     public:
         explicit BallWidget(QWidget *parent = nullptr);
-
         ~BallWidget() override;
 
     private:
